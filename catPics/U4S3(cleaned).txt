@@ -1,0 +1,881 @@
+welcome everybody this is a unit for sprint three module one today we're
+gonna be talking about sequence based modeling in particular when we talk
+about recurrent neural networks in long short-term memory let me talk about the
+our learning objectives for today are gonna be part one to talk about what
+sequence based modeling and neural networks looks like why we need it what
+models there are and some of the trade-offs associated between those
+model types then in part two we're going to do something a little bit more fun
+we're gonna do some text generation with these sequence based neural networks
+we're going to generate some newspaper text and then in today's assignment
+we're gonna be working on generating Shakespearean text today is a lot of fun
+just kind of play around play with some more advanced neural networks and play
+around some different architectures let me also take a step back and talk about
+this whole week so today we're gonna be studying sequence based modeling which
+is really good for text tomorrow we're going to be covering convolutional
+neural networks which are really good for images and on Wednesday we're going
+to be covering auto-encoders which are a specialty type of neural network that's
+really good for dimensionality reduction the three different architectures we're
+covering are what I like to call major neural network architectures they have
+some prominence in the field of neural networks as high-level
+archetypes notice how I switched from architectures to archetypes that's
+because these major architectures the three that we're studying are very very
+simple and you can take them to a much deeper extreme quite literally more
+layers more parameters than what we'll study in class
+this is just to get you familiar with the use cases the different layer types
+and some of the thinking that goes into why these models are necessary there's
+so much more in terms of variety of ie one of the architectures we study today
+so by the end of today's lecture I don't expect you to be an expert in sequence
+based neural networks or palestine's or RN ends just like tomorrow I don't
+expect you to be a expert in convolutional neural networks by the end
+of tomorrow either the idea is simply to enable you with the two
+fools to start going on asking bigger questions about those modeling
+techniques as things come up in your projects whether that's a build week or
+whether that's a work project right I want to enable you with some tools so
+pay very close attention to our learning objectives this week because right our
+learning objectives aren't let's become an expert in convolutional neural
+networks and I also would love it I love love love questions in particular about
+how do I use this network for a problem and if you guys have a question you're
+like with this model work for this data set asked anytime you have a question
+like that ask any at any point during this week because that's the kind of
+stuff that I really want you to build intuition about this week more than how
+to do this stuff in code now the reason why I want to focus less
+on the code this week versus you understanding how to apply these models
+is because any one of these models it's such a basic level that we're studying
+you could go read a tutorial on LST M's CN NS and auto-encoders and have the
+same level under of understanding about the code what I'm offering as a
+resources your instructors let me help you build intuition about how to use
+these things and let's let's try and focus less on the code okay
+let's dive in go ahead and grab that notebook if you haven't already while
+you're doing that I've got a little bit of a treat for you as well before we get
+started so to get you amped up for today because today so much fun we're gonna
+watch a short film that was created by a one of the modeling techniques we're
+gonna be studying today long short-term memory just a couple
+notes about this short film all the text Jerry from sci-fi novels
+and sci-fi like other sci-fi films so the scripts kind of funky I will give a
+little bit of a trigger warning anyone that's sensitive to suicide there's like
+a little into the end of the movie of that no one
+actually commits suicide in this film but there is there are suggestions of
+that okay let's go ahead and watch this again whole text by this is Jerry by an
+algorithm and then acted out [Music]
+[Music] in future with mass unemployment young
+people are forced to sell blood that's something I can do you should see the
+boy and shut up I was the one who was going to be a hundred years old I saw
+him again the way you were sent to me that was a big honest idea
+I am NOT a bright light well I have to go to the skull what do you mean why I
+don't know anything about any of this then what there's no answer we're going
+to see the money all right you can't tell me that yeah I'm coming
+to that thing you know because you'll say pretty I don't know I don't know
+what you're talking about that's right so what are you doing I don't want to be
+honest with you you don't have to be a doctor sure I don't know what you're
+talking about I'm gonna see you - what do you mean I'm sure you wouldn't even
+touch me I don't know what you're talking about
+principal is completely constructed of the same time it's all about you to be
+true you didn't even watch the movie with the
+rest of the base don't know I don't care no it's a consequence whatever you need
+to know about the presence of the story I'm a little bit of a boy on the floor
+I don't know I need you to explain to me what you say what do you baby because I
+don't know what you're talking about that I was all the time would have been
+a good time I think I could have been my life it may never be forgiven but that
+is just too I need to leave and I'm not free of the
+world yes perhaps I should take it from him
+I'm not gonna do something it's not a dream but I've got a time to stay there
+well I still think you could be back on the table
+it's a damn thing scared to say nothing is going to be my thing but I'm the one
+who got on this rock with a child and then I left the other two beautiful day
+I just wanted to tell you that I was much better than he did it good I had to
+stop him I couldn't even tell [Music]
+I'm so happy and blue I was thinking of you
+I was a long long time I was so close to you
+[Music] [Applause]
+[Music] [Music]
+well there's the situation with me and the light on the ship and I was trying
+to stop me he was like a baby and he was gone I was worried about him and even if
+he would have done it all he couldn't come anymore I didn't mean to be a
+virgin I mean he was weak I thought I'd changed my mind he was crazy to take it
+out it was a long time ago he was a little late I was going to be a
+moment I just wanted to tell you that I was much better than he did I had to
+stop him I couldn't even tell didn't want to hurt him I'm sorry I don't like
+him I can go home and be so bad I love it
+and I could get him all the way out here and find a square go ahead and game with
+him and she doesn't show up man I'll check
+it out but I'm gonna see him when he gets to me
+he looks at me he throws me visible and then he says so good the question so
+it's quite a trip right there's a lot happening in that film the plot is quite
+interesting no the neural network did not also composed the music the only
+thing the neural network prepared was the script and then the actors producers
+supply their own biases or at the music camera angles all that kind of stuff so
+isolated to just the script although we just to point out we do have neural
+networks that are capable of generating video and audio today as well this movie
+was made about four years ago so we are going to be doing exactly what they did
+for this film today we are going to be generating texts based off the other
+people's work there are a couple things I want to point out about the film
+number one you notice that the overall plot was not very coherent you know at
+least to us as as humans right we really used to listening to very coherent plots
+and ideas but it did make some sense you know it's like you were able to piece
+together something out of that which is pretty impressive job I enjoy that I
+think it's it's funky and entertaining and it shows where we can go home with
+Berlin ours today now I think some of you have probably seen some more of the
+more cutting-edge stuff that's using Jerry to text we do have much more
+advanced algorithms in 2020 than we did in 2016 there's been a revolution and
+then up the algorithm surrounds performers and transformers yeah like
+the robots that can generate much much better text you might have seen in the
+news recently a a I interview with Billy
+Eilish and the musician where an AI was asking the questions and she was
+responding for them during the interview and there's a model that's really famous
+called gtp - in that field as well we're not gonna be studying those algorithms
+because they are enormous in terms of number of parameters and the birth
+weights number of layers and all that kind of stuff they're well outside the
+scope of this class but I just want to at least acknowledge that they exist and
+do much better versions of the same type of workers need today let's actually get
+into the notebook now yeah you rearranged my screen just ever so
+slightly while we're getting set up I hope everyone had a nice weekend it's
+been like nice and rainy here in Memphis also is ringing I'm reading your
+feedback which I always take your feedback very seriously when I read
+through it by the way somebody was saying I like your yoga ball I actually
+don't have a yoga ball I just bounce around like this a lot I'm stand up so
+you guys know some a little bit more about me I'm at a standing desk
+bear with me just one more second by the way as you are digging through today's
+or just the Sprint's content there's an appendix for the first time you're
+probably seeing that on generative adversarial networks
+it's a modeling technique that we use to teach and part of the program it has
+less practical applications over autoencoders but it's still an important
+technique to know or just know about so if you have some extra time this week
+you can read through that repository or that a notebook and play around with it
+I have tried at read desk actually Mike and never been at a pool desk
+you stopped read desk at the consulting firm I worked out okay so what are our
+learning objectives for today in part one we're going to describe neural
+networks that are really good at modeling sequences and I'll talk about
+what a sequences and this learning objective then in part two we're gonna
+apply an LST em to a text generation problem using Karos today's really a fun
+lecture right the LST M model is a serious model that can be applied to
+lots and lots of problems but we're just gonna have fun generating some texture
+there you don't have to be so serious all the time we can learn about cool
+modeling techniques while having fun so in part one alright let's talk about
+describing neural networks used for sequence based modeling what is a
+sequence there's this Bob Dylan quote that Brian already put in here a long
+time ago yesterday is a mystery yesterday is just
+tomorrow's never when it's supposed to be right so if we try and predict
+tomorrow it's probably not gonna be exactly what we predict that's okay how
+do we predict what's gonna happen we'll use statistics right we're data
+scientists we try and understand what's going to happen in the future using
+probabilities and distributions and the order of things we try and understand
+how things vary over time and that's really what a sequence is all about
+we're trying to model something that happens in a particular order and then
+we use the order as the predictive feature right if I'm on day two the
+trend of stock price is going up and I'm going to predict the day three stock
+prices will also go up and that's the way to think about a sequence sequence
+is just any enumerated collection could be an order it could be a time series
+repetitions allowed a really good basic example is just a Python list the list 1
+2 2 negative 1 is a valid Python list but is yet distinct fundamentally from
+the list 1 2 negative 1 2 why is that that's because the order is different
+that's an attribute of the list data type in Python now if I were to pick
+another data type like a dictionary right order is not important in a
+dictionary it's not a sequence now the reason that that's important the
+distinction between a dictionary and a list is just because the data structures
+that we tend to use numpy Ray's pandas dataframes all kinds of things are often
+built in that fundamental sequence data structure even though that's not
+something that you may be exposed to frequently or think about frequently and
+in fact West McKinney the guy that invented
+pandas invented pandas for quantitative trading stock price time series data so
+pandas is really really good at handling time stamps and time series data now
+what is time series data time series data is not just where you have the
+hoarder but some other actual continuous marker for where an observation lies in
+time that could be like date/time stamp unix time sam an all-time series no
+matter what kind of Time series prominent is falls into some kind of
+sequence and lots and lots of time series techniques exist in classic kana
+map tricks which is the basically the application of regression to some kind
+of problem we're not gonna care so much about classical time series actually a
+neural networks are really really bad at classic time series problems like
+predicting stock price or predicting Bitcoin price or whatever have you they
+don't do well at that what they do do well at solving is more complex sequence
+based problems now let's talk about that a little bit more so neural networks for
+sequences so today we're going to be looking at a smaller subset of the
+family of neural networks and in particular neural networks that are good
+at modeling sequences now I just said that neural networks are great for
+making the stock price which is absolutely true so don't expect to use a
+neural network to win some kind of famous quant problem the hottest thing
+is their Bayesian statistics but leave that aside neural networks are really
+good at modeling text sequence that's what their most famous for were you ever
+stop to think about a sentence like the lazy brown fox jumps over I don't
+remember the rest of the sentence but the right that's a seat
+there's an order of words it's how we understand language lazy Brown okay so
+what neural networks are going to do is take our words or our characters and
+treat that as our sequence data because the order is important we can learn
+something from the order we can extract meaning from it and we can model it now
+how do we model it that's the big question how do we get from the neural
+networks that we studied on Wednesday and Thursday of last week into the stuff
+that we're gonna do today well we do that using something called a recursion
+and a recursion is a math equation it's going to use itself to define a sequence
+it's a really example a famous example would be the Fibonacci numbers where the
+current number is equal is a function of the previous number plus the number two
+numbers before that you're using a function to define itself that's
+recursion that's how we're gonna model things today now instead of using the
+identity of a number in particular what we're going to be doing is using a
+neural network a very tiny neural network it's a loop over itself and feed
+in results two from one output to the next output is gonna feed into the next
+part of the network well what does that mean practically like JC that seems like
+very abstract mathematical practically that means we're talking about neural
+networks with loops essentially what we're gonna do is we're gonna have a for
+loop of a whole bunch of neural networks and we're just gonna feed in input
+through that for loop so what we're looking at here in this
+node diagram is a recurrent neural network I have some inputs X which is a
+array of sequences I'm trying to model a given sequence I'm gonna pass X to some
+hidden state H however deep my sequences I'm going to go through that hidden
+state V number of times to produce my output oh now we called this part of the
+diagram a folded note diagram sometimes it's called furled but the idea here is
+that this is our for loop that's represented in a diagram format and we
+can unroll the network to understand what's happening at a deeper level
+matthias asked is V equal h depth no V is actually a weight matrix Matthias but
+[Music] the arrow the size of the arrow would be
+a the number of items in your sequence that you're trying to model so like if I
+had 40 items in my sequence then the size of my arrow would be 40 units long
+or the number of these things that my cursor are over would be 40
+so given my input at X T which is X at the current time period you'll notice
+I'm starting in the middle here I'm gonna pass that X give it some you
+weight matrix that'll go into some hidden state at time T which will
+produce some output ot now they'll notice this is the first item and a
+sequence but there's always some information that we have to simulate as
+coming from like one time set before so generally this is some like random
+number or some random output that's fed into the next time step some starting
+point you could think about it and like as an accumulator and a lot of your for
+loops where you have like well X is less than zero right you're starting at zero
+or if you're starting with an empty list right you have to have the list there
+beforehand and we're going to iterate through each of these hidden States and
+produce an output for each item in our sequence so if I was modeling characters
+like BCD and I was trying to predict the character that's going to occur next but
+that's what I'm trying to predict then a might be my predicted output from the
+previous step and I'm starting at B I'm gonna go through multiply all the
+probabilities of all of the letters in the alphabet to predict the C hopefully
+I had the C is gonna go in as my information into the next n state and
+I'll try and predict an output so the hidden layers have some kind of
+always have some kind of output that's going back into their own input that's
+really the key takeaway the hidden layers have some kind of output that's
+going back into their own input that's the loop we're talking about there's
+some transition between states and the training data is going to be partially
+based on our outputs now this by the way over here this is an entire
+representation of the network so if you're looking at diagrams of recurrent
+neural networks or LS CMS this is probably the kind of stuff you'll see
+with this loop now this architecture we're looking at here this is just a
+vanilla or current neural network that's what we call this architecture here now
+recurrent neural networks are really really good at solving sequence based
+problems and have been proven to work on many many things of course there's a but
+the thing about recurrent neural networks is they're really bad at
+remembering things that happen over time to have long term dependencies so if you
+saw the movie they were talking about like donating blood or something like
+that some version of that at the very beginning of movie and then they made a
+reference to it at the very end a recurrent neural network would be really
+bad at generating text to do that or predicting that that would happen
+because we'd have a hard time remembering that that happened before
+and so researchers invented a slightly more sophisticated technique the same
+idea of looping over inputs and outputs but adding in some complications that
+allow us to remember or forget certain attributes this type of model is what we
+call an LS TM short-term memory now there's a ton of
+calculus going on here an lsdm unit is way more complicated than what we
+studied previously and I don't recommend that you really dive into the inter
+workings of the Elliston unit just a couple things that I want you to know
+about an Ellis TM number one the reason that an Ellis tiem is better than a
+recurrent neural network is that they have are called remember and forget
+gates which are parameterize ie they have weights that allow information to
+be controlled how much do I remember from before how
+much do I forget as I'm sending out put out those parameters are what make Ellis
+iums more successful than vanilla recurrent neural networks the other
+thing about LS TMS is that there are are multiple ways to structure how the
+output is used okay how you feed in output from one layer to the next layer
+or about three or four different ways of doing that and we'll just folk I just
+want you to know that and to keep that again in the back of your mind third
+thing is that Ellis teams can generally put more weight on short-term events
+it's a thing that happened yesterday is more important than the thing that
+happened a month ago but it will remember what happened at month ago it
+won't lose that older long-term information it's a magic some new things
+that we have not talked about yet but again deserve an acknowledgment with
+these modeling techniques Ellis teams and ardennes typically suffer from
+something called the vanishing gradient problem after enough iterations based on
+the slope of the activation function right the sometimes the gradients can
+become effectively zero updates the weights are just my
+scopic that's what we call them vanish ingredient problem and really Ellis
+tiems help address that problem with their remembrance for get gates yr
+Arden's and LS iam so cool of course there's good at language kind of stuff
+that we saw we saw that film write the entire script was written for the
+modeling think we're studying today there is a absolutely excellent blog
+post on the unreasonable effectiveness of recurrent neural networks that
+implements a recurrent recurrent neural network in numpy by hand so if you want
+to build really really deep intuition about what's happening with recurrence
+for recurrent neural networks check out this blog post
+I mean level of complexity from what we studied last week though is savage so
+like if you were yeah make sure you're really confidence and your understanding
+of some of the math that's going in here or it'll be really hard to follow this
+blog post now for our purposes LS CMS and our NS can be used for a variety of
+different applications so you're gonna see applications for the text generation
+like we already have but that's really not the probably the best use case
+really these text techniques are really good at classification is surprisingly
+like JC how do we do classification with this actually classification is a little
+bit simpler essentially what we're gonna do is we're going to model the sequence
+and pretty make a binary output so we're gonna do this for loop at the end of the
+for loop there's gonna be a nice binary output or multi class output well what
+kind of stuff would be really good for text classification with sequence we'll
+think about review data think about those Amazon reviews we are studying
+back in the NLP week or those Yelp reviews right you've read the text to
+the review you predict how many stars predict that up-down rating
+so you're gonna see LS TMS used a lot in text classification now I want to show
+you an implementation and care us all the stuff we're gonna be doing today
+isn't kurios i'm gonna we're gonna take just a simple example on LS cm training
+from a tutorial from tensorflow this particular segment is not necessarily
+for me but I just want to show you how to do text classification with LS TMS
+and by the way on the Sprint challenge on Friday morning you're going to be
+doing text classification not text generation because it's a little bit
+easier on this one challenge so alright so what we're gonna do now is we're
+going to train an LST in the huddle so we're gonna spy pass the RNN completely
+we're gonna go straight to LS um so we already know that they're better what
+we're gonna try and do is predict the sentiments of movie reviews from the
+imbd data set again I immediate a set is kind of like another iris esque data set
+of neural networks the data set is actually way way way too small to get
+really good performance from an LST M which is okay so you've probably get
+better performance using some of the techniques we talked about in our
+document classification day so you just use a tf-idf logistic regression maybe
+even naive Bayes you're probably gonna get some better results than our model
+now just to show you the architecture a couple notes here on training
+complexities with LST ms Choyce a batch size a little bit more important and
+choice of loss and optimizer is pretty critical because some of the
+configurations that you choose will never converge on a good solution also
+the lost patterns that you'll observe when training an LST m are very very
+different than what we observed last week with the tabular data sets we
+worked with you remember our loss functions look like a really nice sloped
+L okay our last options are gonna look more like crazy
+little squiggly lines but the idea is hopefully that's decreasing so we're
+gonna import our pre-processing sequence we're going to build a sequential model
+we're going to use a dense and embedding layer I'll talk about the embedding
+layer when we use it for the first time import our lsdm layer and RI and BD data
+set again IBD comes from Kaos IRS s data set of machine learning 20,000 max
+features max length of 80 and batch size at 32 you're wondering why batch size of
+32 this is like Yan laocoön weird paper on using a batch size of 32 I won't go
+into fashion ice too much right now but supposed to be pretty good okay max
+length what this is gonna do is that all of our text no matter how long the text
+is in terms of words or the review we are always going to cut it off so it's
+only 80 words so like the review is 91 words we're only going to get the first
+80 we'll go and load the data
+also let me go and change my environment real quick this first line of credit run
+um use the same environment we used last week this is the one I created you for
+s2 in an F Laureus why do we need to cut the length of reviews what are the
+pro/con so that essentially what you want to do that for Laurie is to make
+sure that all of the input sequences into your model are of the same length
+so your models architecture works out essentially as you're training it you
+want to be able to have those fixed link sequences so that your loop over all the
+weight matrices are identical for all input observations when you get into
+post training then you can maybe play with it a little bit the thighs us what
+if negative reviews tend to be longer for example with ice that is the kind of
+data exploration that you should absolutely do beforehand so like right
+we're hopping straight that the modeling today to work on a classification
+problem but that type of stuff if negative reviews tend to be longer you
+should explore like what's the cross tabulation between lengths and reviews
+for the way I would start this problem myself if I were starting from scratch
+I'd look at the distribution of length of the reviews and I would say you know
+I'll get 75% of the reviews full-text if I chop off the length at 80 okay I don't
+know if that's exactly the threshold but that's how I would approach the problem
+if I were starting from scratch but great hypothesis to test so we have
+25,000 train sequences 25,000 test sequences split down the middle all
+right let's take a look at an observation within X train why don't we
+look at the first observation all right this is supposed to be text data does
+anyone know what's going on here I just got a bunch of numbers 1 14 22 1643
+yeah but Emma's already on it this data is encoded already so each number here
+like Faraz is saying is going to correspond to a unique word a lot of the
+hardest stuff and these data sets has already been extracted away for you
+again what you're dealing with here the data set is already been encoded in
+order to get your data to look like this you'd have to do some of the things we
+focused on in our NLP week right you'd have to build some kind of vector
+representation of the text you could use Jen sims I detoured that's a handy
+command for that I'm sure kiosks has some stuff like that as well we're gonna
+do everything like this and I'm pie today just to play around with it kind
+of out what we need to do here see let's do Ln of X train 0 218 characters
+ok if I pick another one of these observations
+I like 765 306 72 76 characters again we're only going to keep the first 80
+that is a parameter that you can change to Matthias points
+okay so we're gonna how are we gonna pad the sequences I'm gonna add just a quick
+note here so we know our doing we're to Train we're gonna fix X train we're
+gonna use the command from Chios sequence pad sequences X train max
+length equals the max length that we set before which is 80
+what does pad sequences do not only does it cut right so it cuts off at 80 the
+other thing it's going to be doing is also anytime that our text is shorter
+than 80 characters it's gonna Pat it with a whole bunch of zeros
+that's the secret a pad sequences okay now we also need to do this for our test
+data okay and let's print out the shape of everything
+yep that Monday morning so now our data has gone from just 25,000 for training
+tests to 25,000 times eighty all right so now I have that sequence of 80
+characters fixed length let's take a look at a single observation again that
+first observation and that looks more efficient now all right now let's go
+ahead and build our model so now my input data is pretty tidy let's stitch
+everything together so we're gonna build of course a sequential model there are
+other types of kiosks models will talk about the functional API a little bit
+tomorrow but really a lot on Wednesday so - that sequential model we're going
+to add what's called an embedding layer we're gonna set a parameter in this
+it's called max features how many features do we have at our max remember
+what I set this to it's not 128 a 20,000 max features is 20,000 all right now
+does it they want to remember what embeddings were from our collection
+discussion during our NLP week what is embedding it's a type of free trade
+model yeah it could be eric says numerical representation of the text 8
+it yes but err don't we already have that
+right me to have a nice and numeric representation of text data so what is
+our embedding layer gonna do yeah yeah Fras where do batting's are
+groups of words that are grouped together because if similar greetings
+yeah maybe it's some kind of context yeah yeah that's a side effect right
+that's a goal that we were trying to get at so what the embedding layer is gonna
+do this because we have 20,000 input features what we're going to do is take
+a second and we're gonna reduce those 20,000 input features into a hundred and
+twenty-eight real mount vector thanks I took 20,000 features I think about a 1
+hot encoded layer that has 20,000 features and I tried to squish that into
+my neural network I'd have a ton of parameters so what the embedding layer
+is gonna do is is kind of a dimensionality reduction technique for
+us in this case we're not going to be using a pre strain model we're gonna be
+learning the weights ahead of time so we're going to make a connection fully
+dense connection between all the features and 128th then to are embedding
+layer agustin s is this the same sort of idea of projection of vectors in linear
+algebra same goal I guess Agustin right where you're
+trying to project it into a smaller space although it is parameterize so
+it's not the actual mechanics of the projection are different all right so to
+our model we're gonna add an LS TM layer that has 128 units I'm going to add a
+dropout rates - and I'm going to add over current
+dropouts now a typical lsdm architecture only has one hidden layer just an LS TM
+layer the embedding layer is kind of like a feature extraction layer so we
+don't necessarily consider that a hidden layer
+I guess although technically it is the most architectures with LS teams have a
+single L esteem layer and then the output layer so we'll go ahead and add
+our output now our outputs was going to be a dense layer one neuron the sediment
+classifications binary like didn't like and our activation for that is going to
+be sigmoid so notice I didn't specify any activation functions inside the LS
+TM and that's okay the reason that we didn't specify any
+inside LS iam is because it has default activation functions for the different
+components inside of it that was team unit and they are fine if you're
+wondering why 128 I'm going to print out the shape of the model so we can talk
+about it just a second after I compile it okay and then let's go ahead and
+compile the model we're gonna use binary cross entropy
+we use Adam is our optimizer and our metric it's going to be accuracy out of
+Y my summary now this is interesting I have 2.6 million parameters in this
+model that's a lot we did 55,000 I think on our hyper parameter tuning day right
+2.6 million almost 2.7 million parameters and still scary or perhaps
+scarier is that today's cutting-edge models like GT p2 or some of the other
+transformers and Reformers have something close to like a billion
+parameters so you're measuring parameters the hundreds of millions
+maybe even the billions for more of the state-of-the-art models
+yeah and Mike's ready most of our initial parameters are
+coming from the embedding phase now our lsdm layer this is like having a hundred
+and twenty eight for loops okay so when you're thinking about everything passing
+through your model to make predictions you think about it as a hundred and
+twenty eight distinct for loops that when we train the model will inevitably
+all be 80 characters long or 80 words long but there's no indication of the
+length of the shape of the sequence here thank you that's kind of weird like
+what's going on there why don't we care about that shape at all right because
+this is looped the length of the input when you're training the model is
+important for it to be fixed so you have consistent behavior in the model
+basically it's just a practical note that we've learned from neural networks
+research but your model could theoretically handle different lengths
+of sequences so you only need 128 units for the forth loops basically they'll go
+over how the longer sequences one thing here though to note is the each of these
+128 four loops has their own sets of parameters they're constant across each
+of the four loops when we back propagate the error across the loop and we update
+the weights but we update the weights for the élysée in unit wear that are
+only a hundred and twenty eight of those units
+and the ass is the embedding included in the for-loop or is it re embedded each
+time no so the embedding what will happen of the embedding is it'll embed
+the each of the inputs so like item number one like word let's go up here
+word fifteen there'll be a hundred and twenty eight value vector for this item
+so your shape will be pretty complicated so it'll do they'll pass through all of
+this and then for each item in this array that'll be 128 let's go and train
+them up model in our X train or Y training set our batch size equal so you
+batch size that parameter we set up above again equal to 32 here we're going
+to keep this extremely tiny again just for teaching because this takes model
+takes forever run which is five F X and we do have some validation data that we
+can use to calculate our validation accuracy so we'll do X test and Y test
+I'm actually going to store all of the data inside of a model parameter here
+these bottles are gonna take a long time to run that's just the nature of really
+a lot of the models to be run during this week they're all still pretty toy
+examples in terms of the datasets again to teach you the architecture get you
+familiar with these cases when you move into really training a neural network
+for work now I've used this benchmark of ten thousand observations per class
+before if you're dealing with the multi-class problem
+you could have neural networks that run for an hour or two hours or three hours
+or if you're hyper parameter tuning and you're doing a random search or a
+Bayesian optimization then you could be running hundreds of different models and
+that could take two or three days to run all of the different parameters that
+you're tuning neural networks take a long time to run and that's okay yeah
+having ETA is great most models don't that run yeah but you know bigger batch
+sizes you know how long it takes to go through a batch you know how many
+batches there are none observation so it's easy to calculate an ETA as you
+notice the ETA updates after the first couple batches - and we don't have to go
+through all five epochs here because really like I mentioned when I started
+this example there aren't necessarily we're not gonna get to see our
+performance on this problem which is totally fine so what we'll do now is
+we'll go ahead and take a quick well not a quick break but we'll take a take a
+10-minute break when we come back from the break I'll show you the results with
+this model in a graph and then we'll move on into generating text when we
+move on to generating text my one of my big goals and generating text is helping
+you understand the shape of the input that goes into the model so like how I
+was talking about the 128th and the adding layer and how their shapes put
+together our next example should help you build intuition around those shapes
+okay let me go ahead and start the timer all right everybody I'll see you in ten
+minutes you
+all right everybody let's start coming back together okay before you dive into
+some of the results I just did a quick plot which you guys promised somebody
+working on during the break of the model lost we only trained five that big so
+that scale might be kind of funky but it does look right and it's showing you the
+half increments but if you look at the points maybe there is an upward trends
+in training and testing between the different loss files so we'll see yeah
+maybe if I train more this pattern might correct but already by the first epic my
+overfitting DVD probably need more trainings what I'm saying based on the
+graph just to see what's going on I'm basically what else getting the same
+issue as a mirror just so I know if you if you just want to maybe give me a like
+same emoji on Amir's comment if so we can go back and fix it if not Amir then
+we can take a look at it during office hours or something
+no you don't have to refer to this history dot history you could call the
+variable whatever you want I can call this unicorn yeah Mike were you in say
+something oh oh so hit so the second history is
+the name of a parameter in the model or something or the yeah it's a dictionary
+of values associated models performance so I think models like history might
+work as well but I think that this is a little bit cleaner
+um just to know that you're saving the results of your modeler new variable but
+yeah I think we could try it we could try this do the whole experiment here
+modeled on history yeah I think this is a this is only available after the dot
+fit statement variable right mess this up because I haven't rerun this called
+unicorns but let me make sure that this is fixed for you when you download this
+go down this lecture code later okay I'm just a quick summary there you
+will be expected to use carousel STM classification on the Sprint challenge
+you're not going to do it the assignment at all today the workflow will look
+pretty similar to what you discovered pre-process the data had the sequences
+and declare an architecture if the model is still training you go ahead and
+interrupt the kernel this model the actual model the results aren't not come
+be relevance the next part of the lecture oh you know Laurie that's a
+great question if you interrupt the model of finishing I guess it won't have
+that history variable to find probably if you if you want to stop your model at
+some point during training like that you could use tensor board and write the
+data from each epoch to a log file or you could use early stopping to kill
+your model after whatever parameter and validation loss you want to change now
+let's take a look at how to do text generation with your ass so right Ellis
+teams can do text classification they could also do time series based modeling
+as well where I could try and predict stock price and you know it'll work for
+that use case it just may not give you as good of results other techniques so
+regression and classification still works there let's talk about this more
+advanced use case X now in order for us to do text area here us the thing we're
+going to need that's going to be different is essentially just some
+custom callback functions things that'll print out our predictions as we're
+training them not really too wild she's gonna print out some generative
+text at the end of each epoch we're gonna do this using what's called the
+lambda callback function which is an anonymous function that means I don't
+have to define a whole class method that's called generate text write with
+like all the stuff curiosity specs Kiros has this lambda callback function
+that allows me to wrap another standard function anonymously you'll see what I
+mean a little bit more further down in the lecture ok everything else about our
+model stays the same except in this particular case we're not going to be
+using a embedding layer the reason we're not going to be using an embedding layer
+is because we're not going to be dealing with words instead we're going to be
+switching from words to characters again we're switching from words to characters
+now if you want to work with words in the assignment today which I definitely
+recommend is a stretch goal you would need to use some other tokenization
+method all right like Spacey or something like that to tokenize the text
+and then use those resulting tokens and a lookup in turn trigger and embedding a
+subsequently okay so since we're not using a betting the only things we need
+are the dense layer and the lsdm layer the rmsprop is just red herring from it
+I think it's an artifact from an older lecture ok now the data set we're gonna
+be working with is data set that I scraped a couple of months ago from the
+Washington Post using a Python package called a
+newspaper so if you guys are interested moving some automated analysis of the
+news this is a great Python package it'll go out to you like a couple
+different news sources and take the headline stories from that day good good
+package go ahead and play with it we used to use it live during lecture but
+we ran into some issues some people are trying to get the data at once the data
+is saved like we saw from our NLP week each article is in its own file so we're
+gonna loop over the directory and grab just the text files
+there's only 136 of these articles so it's again it's pretty short text not
+wild in length now if I print out one of these observations this will be the last
+one I always look at the first one all right this is truly raw text so in order
+from us to go from raw text to the stuff that we saw go into this model what
+we're gonna do is we're going to encode the characters you guys are getting a
+unicode air anyone remember how to fix Unicode yeah
+ivana for the win see if that doesn't help where you type utf-8 I think this
+also works but cool I'm just a common thing with text data which we didn't
+talk about her in an Okie week knowing encodings and how you did it is a code
+it is actually very important you can debug some of these errors most text is
+encoded in utf-8 and so like most things are pretty safe that way there are some
+instances where text can be encoded with what's called latin 1 or s key that's
+just basically english letters python 2 used ants key in Latin 1
+that was what the actual language itself was encoded in so utf-8 support was not
+great now that we're in the Python 3 utf-8 isn't the standard so it's a
+little bit more operable and sometimes when you're opening Word files like from
+a word doc like Windows word doc docx the typical encoding for most windows
+files is Latin 1 or ants key and so you might get run into some issues there as
+well small side bar but encoding is important be cognizant of it most things
+are encoded as utf-8 there are plenty of exceptions
+right so here's our data and again we're gonna encode it as each character as
+well code h e are eccentric cetera you've probably got some different texts
+here again it's how the files stored the files are sort in your directory that's
+totally fine the order is not terribly important for us so to encode the data
+as a set of characters the first thing I need to do is know all the characters in
+my data set so what we're going to do is we're going to gather all texts why why
+are we doing this one to see all the possible characters and to your training
+later I'll talk about this yeah so we get our text into one giant method using
+what so I have a list of 137 documents well its string method could I use to
+get all of the text into one giant string not append I can use dot join
+yeah there we go string method dot join credit empty
+string to that string I can join this list of other strings which is called
+data that's all my data is now in one giant
+variable what are the unique characters how do I get this how do I get a list of
+unique characters yeah we can do a set I am gonna turn that asset into a list the
+list set text right create a set of all of the characters turn that set back
+into a list now we're going to create our lookup tables where we can turn our
+character into an integer and our integers back into a character so
+character editor or integer character in enumerate campus I'm simply going to
+copy and paste this and slip swap the key and value pairs in the loop
+I drop that and slack if you guys want the code alright let's go ahead and run
+it how many unique characters do I have 121 unique characters we good right I
+mean not bad it's better than to better than 20,000 a smaller data set a little
+bit easier to work with just to pause here to acknowledge why we're using
+characters not words again to simplify this example if we wanted to encode this
+with words we'd have to use space you would have to import a lot of stuff and
+we'd have to do a lot heavier pre-processing okay so now there's no
+reason why you shouldn't do that that's a great thing to do to this kind of
+problem but we're just doing some text generation and that's what we care about
+in terms of that principle so characters is a little bit simpler to do for us in
+this use case so that's what we should have chosen to do but there's a lot of
+stretch that you can apply here now we've created the character lookup so we
+haven't actually created the sequence data now I need to create a sequence
+data we're gonna set our max sequences to a length of 40 now our data is gonna
+be kind of all over the place what do I mean by all over the place I mean that
+I'm gonna take that giant text string and I'm going to create a 40 character
+sequence and step by five characters across the whole text string it's a good
+way to generate some more days why is that problematic
+well we mixed articles together right so I mixed all 136 articles together into
+one giant text string and so that could be kind of problematic I might just want
+to create before D character chunks out of the one article but instead we're
+gonna scan over the giant text string and take 40 characters at a time okay
+change this variable to max length yeah yeah thanks Quinn yeah
+on point I'll call this step it's five right this is how many characters we're
+gonna move a little scan function by now I'm gonna go ahead and code all of the
+data at one time so I'm gonna loop over the characters C for C and text write
+that a loop over the characters the function I'm going to apply is just a
+dictionary lookup character to integer for that particular character now we're
+going to create some empty sequences now here's the challenge question really
+hard challenge question if before in my first hero's LST model I showed you we
+were dealing with a classification problem right now we're dealing with a
+text generation problem okay JC what does my target look like in this type of
+a problem so I'm creating my sequence data this is going to be basically my X
+underscore train and in my next line I'll have a y underscore train what is
+the Y underscore training each of the hundred and twenty-one characters as a
+label could be Jonathan but not yes yes I think you're onto something each of
+the hundred and twenty characters as a label as a so it's a multi-class
+classification problem but what is the particular element that we're trying to
+predict Laurie said could be examples of actual sentences from the text that's
+our that's our training data X no score test is the actual test data yeah we're
+bodies have got it we're gonna try and predict the next character so we're
+gonna take that forty character trunk and we're just going to try and predict
+the next character sequence sequence sequence next character sequence
+sequence sequence next character sequence sequence sequence next
+character we're going to fact call that variable
+next character so just a quick note here each element 40 character is long we'll
+inspect the shapes of all of these for I in range of 0 through the length of our
+encoded data okay all right this is all the text encoded as numbers minus the
+max length right because the last thing was 40 characters we don't want to go
+and then try and create a string that won't fit an arc encoded data and our
+step size so that's how we're gonna iterate over that giant string so to our
+sequences we're going to append encoded I through I plus max length
+okay then to our next character we're going to append encoded plus I plus max
+length prints she end up with something like
+178 thousand three hundred and thirty-four sequences that's a lot of
+data that's a lot a lot of data right we're still not quite at a place where
+this is usable in our model let me show you why
+so I got two sequences and I go to the first sequence okay this is what our
+data looks like when we went to Kaos right like when we loaded the IMD data
+set this is what we got so now what we need to do is we need to
+transform this data so it looks a little bit different okay now what I want to do
+is I would encode each of these values or it says 18 here instead of 18 there's
+going to be a hundred and twenty other values for each item in the sequence so
+that each row for each observation in the sequence right is one hot encoded
+for that particular character so we're gonna do that both for the sequence the
+input data and for the next character the target
+so I'm going to call this step create X&Y so we're going to start by creating
+both empty arrays of zeros for x and y and then updating the array based on
+position of the character so we'll create everything was 0 as for x and y
+and then for the first observation for the 35th character we're gonna update 35
+to character 57 to 1 now the shapes are really complex and we'll print out some
+of the shapes to talk through them okay so X dot numpy of zeros which the shape
+here be that's the first item you all think I should put in terms of my X
+what's the first dimension you think any guess like a wild guess how long should
+by X be yeah so we've got three dimensions we
+need to specify here the first needs to be the length of the training did mike's
+guess I'm going to use the length of the sequences though right why the length of
+the sequences because that's our character a series of forty characters
+all right what does the second dimension need to be for each of the sequences
+there are this many things I should use max length okay then finally and
+somebody's already guessed it as another attribute for each of those forty items
+what do I need to have how many values don't need to have yeah Laury Laury got
+it and someone uploaded it we need a hundred and twenty-one values for each
+item the sequence to know which character that item is so this should be
+equal to the length of characters we'll just make sure that everything is a
+boolean I think it's in zeroes it's like that anyway but good to state that okay
+now let's also create some zeros for our line which also needs to be equal to the
+length of sequences but unlike the the input data we're only trying to predict
+the ass character I need the Ellen of
+characters why the Ellen of characters why not
+one hot encoding right because we're just trying to predict that last
+character we can just use a nice probability function for that Korea
+number of neurons equal to the number of characters we have so let's use data
+type equals numpy bool now that was all 0 is there actually there's no data in
+that per se yet so for I and our sequence and we're gonna enumerate over
+the sequences for T and the character in enumerate a particular sequence we're
+gonna update i x YT character equals 1 this observation right X I a particular
+observation a particular item within the sequence the encoding of that item
+within the sequence update that to 1 then finally we need to update our next
+character which my next character the type of variable right next character of
+I change that equal to 1 okay just do a quick for now
+next up shape alright does everyone understand the shape of X does anyone
+have any questions on the shape of X okay shape of Y looking pretty similar
+as well we're good here so about 180,000 sequences of 40
+characters for each of those 40 characters there's a one hot encoding of
+that character wow that was a lot it's a lot a lot now let's build our model
+we're gonna build a simple lsdm model our model is going to be sequential I
+can go straight to my LCM layer I don't need that I'm cutting layer
+my input shape should be equal to max' length and the ln of characters the size
+of my data going in 40 by 121 model dot add we're gonna add a dense layer the ln
+of characters is the number of output neurons our activation is going to be
+softmax finally let's go ahead and compile the model
+and we'll use Adams our optimizer now I've had a couple functions here to help
+you we're not going to type these out these
+should already be here for you what sample is gonna do right is because our
+function returns a list of probabilities for each of the outputs instead what
+we're gonna do is we're going to turn a return of max okay of probabilities from
+sample that what that's gonna do is tell us basically which character the model
+is predicting us with the sample function does of all the probabilities
+121 probabilities model output for particular character get the max of that
+give us that character here's the thing that does the the printing on epic end
+we're gonna pass it the state of an epic that's the input into the model and
+we'll show some information we're gonna loop over the start index I'm just gonna
+be our text okay then we're gonna use that start index our starting taxes are
+starting sentence and then for my max length that I want to predict what I'm
+gonna do is I'm gonna loop over my model to write the maximum number of
+characters that I want for our case it's gonna be 400 characters all right I'm
+going to take my sample input of only 40 characters I'm gonna times that by 10
+writes 400 additional characters in addition to the 40 seed that I started
+with that's all these models work you have some kind of seed okay and then
+they give you predicted output based on the seed
+yaaaas no metrics no we don't need any metrics we're not trying to measure
+anything in particular and you could measure accuracy but accuracy won't
+really tell you that much in addition to loss is it's not really
+interpreted so I couldn't add a new metric here if I want but it's not a
+required argument as long as you have a loss function and now let's go ahead and
+fit the model will fit X look at why what's that batch size over 32 we're
+gonna do a very small number of epochs maybe even only 10 then to our callbacks
+I'm going to add my print call back let's see how it goes let me just double
+check really quickly here okay good all right you can see it generating text as
+its training course in the first epoch it's gonna be junk and hopefully later
+on becomes better yeah I think so Mike that's okay I'm
+gonna change the last function just to categorical cross-entropy guys if you
+saw the change change the last one to categorical cross entropy and make sure
+to recompile the model fit it again hopefully this looks a little bit better
+two minutes getting some generated text
+by the way when you get to today's assignment things will take forever hun
+that's okay you know make sure to as you're prototyping things maybe set
+things only like one or two epochs just to see if you can get things to run well
+Lori asks what ever change the loss function and the output I change the
+loss function I was getting ahead of myself Laurie sparse categorical across
+entropy has a slightly different use cases in categorical cross entropy but
+the way our data structured is it's really expecting categorical cross
+entropy not sparse categorical cross entropy in the Laureus what are we
+getting the sexes to have but now like we did the first time we tried that's
+because of the way it's sparse categorical cross entropy is being
+calculated it was doing that like during the batch and treating that like an epic
+end yep that definitely explains the 140
+minutes prep I kept that's right Mike okay let's see if my function works well
+they look like words that's pretty good typically in the first two runs
+sometimes it doesn't really look like much again this is the sample text all
+right this is what it started with in such changes are made and we will
+make a that was the speed you can see it in the VNA the text you will make a and
+then it starts down here it's pretty good results right we're generating
+things that are at least about the same length of words and with the number of
+epochs you'll start to see the text converge and something it looks half
+decent alright this will continue to train
+forever but you can let it rip
+Mike exactly like a million monkeys on million typewriters skipping ahead to
+the assignment so in today's assignment you will be
+expected to use a Costello scheme to generate text that's going to be today's
+assignment let's just do a quick review of today so our learning objectives in
+part 1 were to describe neural networks used for modeling sequences two of the
+classic neural networks used for modeling sequences are RN n s and LS TM
+s where L plus teams are complication of RN ends what our sequence problems those
+could be time series problems like predicting the stock price predicting
+the weather they could be text classification problems predicting how
+someone feels in a review all right reading the text I think that's a good
+way to think about any kind of classification problem with sequences is
+you're reading the text to make a summary you could also use the same type
+of sequence based structure for text generation these are all the use cases
+we talked about today but there are many many more use cases for sequence based
+neural networks couple other points LS CMS are generally preferred over RN ends
+for most sequence based problems so use an LS TM notes on architecture LS teams
+are a typically a single layer of an LCM type ok so there's an LCM layer and your
+output layer although other architectures are possible so that's
+like the classic paper on Ellis teams is going to talk about the architecture as
+a single layer you could stack alternatively though you could stack and
+let's see in layers together you could use an LST
+more complicated architecture there's no reason to just stick to that but for
+most problems in L SCM with a single layer is going to do pretty well now the
+other thing we learned in part one is that Quiroz has some handy
+implementations for both of Ellison layers and recurrent layers and so you
+don't need to mess with student by hand at all in part two we applied lsdm to a
+text generation problem using chaos the stuff that we really cared about was the
+shape of the input data that's really important so when you're dealing with
+the assignment today you're dealing with a text generation problem how you
+structure the problem is important so you have to think through what is my
+input data look like what is my predicted target look like that's the
+kind of stuff you have to worry about when you're dealing with text generation
+problems all this stuff can take a while to train so don't fret if your model is
+taking awhile today again set the number of epochs to be something pretty low
+okay do experimentation with only one epoch and you can use this modeling
+technique to turn a movie scripts let's talk about the assignment the thing Mike
+was referencing it says in an infinite number of monkeys typing for an infinite
+amount of time will eventually type among other things the complete works of
+William Shakespeare thinking wait what what is going on this is that an actual
+philosophic theorem you can go read the wiki on it right if you're just randomly
+typing characters for an infinite amount of time at some point you're never ibly
+going to come across some kind of accommodation that's any text that
+you've ever seen doesn't have to be William Shakespeare
+but that's just part of the thought experiment now what we're going to do
+instead is get there a little bit faster using LS teams so there's a text file
+Project Gutenberg this link here you'll need to grab the text
+I'll open it in just a second we'll take a look at it you'll grab the text file
+you can either download it or you can use request and you're going to use that
+as your training data for your RNN lsdm now i want you to keep it pretty simple
+when you're doing your basic analysis today and train it at the character
+level but again that's an initial approach you can move on as a stretch
+goal and instead use other encodings now your goal is to just generate
+Shakespearean style text what you want to be able to do is pass a seed input
+and then get some kind of prediction off of your seed by the way Shakespeare
+wrote a ton of stuff so you can try and sample the data play with your
+parameters and really work on getting a tighter feedback loop to get things up
+and running like I mentioned I don't want to scroll on too far because I've
+got some of my like fun you some of my answer key kind of stuff in here but the
+also gonna say the shape of your input data is very very important and your
+choice of how you do that because there are actually a couple different ways you
+can go about shaping your input and target data you could do something like
+I did during lecture you could do things per line your tons of different ways to
+slice the problem okay let's talk about some stretch goals so you can refine the
+training generation of texts to be able to ask for different styles of
+Shakespearean text ie plays verses sonnets there's a clear cut off in the
+text file between plays and science so if you can find that magic line number
+you'll be pretty good you could make it more performance writes lean on Keros
+optimize some of the code they use collab whatever you want to do
+all right some resources for you I definitely recommend the write-up on the
+reasonable effectiveness and role networks of recurrent neural networks an
+update of that code using Python 3 and there's some other good resources in
+here as well the other stretch palette I don't think I have written out but you
+can use Spacey also to try and tokenize the text and pre process it in a
+different way maybe use the words using the characters all right
+I think today's assignment is a blast but I'm a geek and I love I love both
+Shakespeare and owns neural networks so it's a great combo for me I hope that
+you all enjoy it as much as I do this particular assignment let me know if
+there are any questions as you're working on this will be doing office
+hours both Tuesday and Thursday this week I'll announce the office hours
+during lecture on Tuesday and Thursday respectively and then on Friday let's
+plan on doing it 30-minute sprint review as well well I hope everyone enjoyed
+this lecture I'll drop my lecture notebook here in just a second so you
+have a copy of it and then you guys can get crafting again don't worry about run
+time things will just take a little bit longer today so focus on prototyping and
+getting your code working before you let your model rip
+hmm any less questions about today's content or today's assignment okay
+thanks everyone for joining I'll see everyone tomorrow and we'll be talking
+about convolutional neural networks and playing with images and computer vision
+all right thanks everybody  
